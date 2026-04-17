@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact — ASEG Influence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .contact-wrap {
+      margin-top: var(--nav-h);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - var(--nav-h));
+    }
+    .contact-left {
+      padding: 96px 72px;
+      border-right: 1px solid var(--light-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .contact-title {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(52px, 6.5vw, 104px);
+      letter-spacing: -0.02em;
+      line-height: 0.92;
+      margin-bottom: 40px;
+    }
+    .contact-body {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: #666;
+      line-height: 1.75;
+      margin-bottom: 48px;
+      max-width: 300px;
+    }
+    .contact-email {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 5px;
+      transition: opacity 0.3s;
+      width: fit-content;
+    }
+    .contact-email:hover { opacity: 0.4; }
+
+    .contact-right {
+      padding: 96px 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .form-group { margin-bottom: 44px; }
+    .form-group label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 14px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--light-border);
+      padding: 12px 0;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--black);
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #bbb;
+      font-style: italic;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--black); }
+    .form-group textarea { resize: none; height: 110px; }
+    .btn-submit {
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      background: var(--black);
+      color: var(--bg);
+      border: none;
+      padding: 20px 56px;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    .btn-submit:hover { opacity: 0.6; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">ASEG Influence</a>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="talents.html">Talents</a>
+      <a href="contact.html" class="active">Contact</a>
+    </div>
+    <div></div>
+  </nav>
+
+  <div class="contact-wrap">
+    <div class="contact-left">
+      <div class="section-label reveal">Rejoignez-nous</div>
+      <h1 class="contact-title reveal">On<br>parle ?</h1>
+      <p class="contact-body reveal">Vous êtes créateur et vous voulez en savoir plus ? Écrivez-nous.</p>
+      <a href="mailto:contact@aseginfluence.com" class="contact-email reveal">contact@aseginfluence.com</a>
+    </div>
+    <div class="contact-right">
+      <form>
+        <div class="form-group reveal">
+          <label>Votre nom</label>
+          <input type="text" name="nom" placeholder="Prénom Nom"/>
+        </div>
+        <div class="form-group reveal">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="vous@exemple.com"/>
+        </div>
+        <div class="form-group reveal">
+          <label>Votre message</label>
+          <textarea name="message" placeholder="Présentez-vous, partagez vos réseaux…"></textarea>
+        </div>
+        <button type="submit" class="btn-submit reveal">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">ASEG Influence</div>
+    <div class="footer-copy">© 2025 — Tous droits réservés</div>
+  </footer>
+
+  <script>
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 90);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>

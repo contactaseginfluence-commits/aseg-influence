@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Talents — ASEG Influence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-header {
+      margin-top: var(--nav-h);
+      padding: 96px 64px 72px;
+      border-bottom: 1px solid var(--light-border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      gap: 64px;
+    }
+    .page-title {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(56px, 7vw, 112px);
+      letter-spacing: -0.02em;
+      line-height: 0.92;
+    }
+    .page-subtitle {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      color: #777;
+      line-height: 1.75;
+      max-width: 320px;
+      padding-bottom: 8px;
+    }
+
+    .talents-grid {
+      padding: 2px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .talent-card {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      background: #ddd;
+    }
+    .talent-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      filter: grayscale(15%);
+      transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.6s ease;
+      display: block;
+    }
+    .talent-card:hover img {
+      transform: scale(1.06);
+      filter: grayscale(0%);
+    }
+    .talent-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 40px 28px 28px;
+      background: linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .talent-card:hover .talent-overlay { opacity: 1; }
+    .talent-name {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 300;
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">ASEG Influence</a>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="talents.html" class="active">Talents</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div></div>
+  </nav>
+
+  <div class="page-header">
+    <div>
+      <div class="section-label reveal">Notre roster</div>
+      <h1 class="page-title reveal">Nos<br>talents.</h1>
+    </div>
+    <p class="page-subtitle reveal">
+      Des créateurs avec lesquels nous construisons quelque chose de durable.
+    </p>
+  </div>
+
+  <div class="talents-grid">
+    <div class="talent-card reveal">
+      <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=700&q=85&fit=crop&crop=top" alt="Sophie M."/>
+      <div class="talent-overlay"><div class="talent-name">Sophie M.</div></div>
+    </div>
+    <div class="talent-card reveal">
+      <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=700&q=85&fit=crop&crop=top" alt="Léa R."/>
+      <div class="talent-overlay"><div class="talent-name">Léa R.</div></div>
+    </div>
+    <div class="talent-card reveal">
+      <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=700&q=85&fit=crop&crop=top" alt="Camille D."/>
+      <div class="talent-overlay"><div class="talent-name">Camille D.</div></div>
+    </div>
+    <div class="talent-card reveal">
+      <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=700&q=85&fit=crop&crop=top" alt="Nina K."/>
+      <div class="talent-overlay"><div class="talent-name">Nina K.</div></div>
+    </div>
+    <div class="talent-card reveal">
+      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=700&q=85&fit=crop&crop=top" alt="Julie P."/>
+      <div class="talent-overlay"><div class="talent-name">Julie P.</div></div>
+    </div>
+    <div class="talent-card reveal">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=700&q=85&fit=crop&crop=top" alt="Marie T."/>
+      <div class="talent-overlay"><div class="talent-name">Marie T.</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">ASEG Influence</div>
+    <div class="footer-copy">© 2025 — Tous droits réservés</div>
+  </footer>
+
+  <script>
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 90);
+        }
+      });
+    }, { threshold: 0.04 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>
