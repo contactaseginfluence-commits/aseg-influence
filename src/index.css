@@ -98,8 +98,14 @@
   width: fit-content;
   cursor: pointer;
   transition: gap 0.35s, opacity 0.3s;
+  border-radius: 2px;
+  outline: none;
 }
 .cta-link:hover { gap: 26px; opacity: 0.5; }
+.cta-link:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 6px;
+}
 
 /* ─── Section label ─────────────────────────────────────────────────────── */
 .section-label {

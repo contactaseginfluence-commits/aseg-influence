@@ -75,7 +75,7 @@ function Navigation({ page, setPage }: { page: Page; setPage: (p: Page) => void 
     <nav className="fixed top-0 inset-x-0 z-50 h-[76px] grid grid-cols-[1fr_auto_1fr] items-center px-12 bg-background border-b border-border">
       <button
         onClick={() => setPage('home')}
-        className="font-[family-name:var(--font-display)] text-[12px] tracking-[0.3em] uppercase text-left cursor-pointer"
+        className="font-[family-name:var(--font-display)] text-[12px] tracking-[0.3em] uppercase text-left cursor-pointer min-h-[44px] flex items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground rounded-sm"
       >
         ASEG Influence
       </button>
@@ -87,8 +87,9 @@ function Navigation({ page, setPage }: { page: Page; setPage: (p: Page) => void 
             key={key}
             onClick={() => setPage(key)}
             className={[
-              'font-serif italic text-[19px] tracking-[0.01em] relative cursor-pointer transition-colors duration-[250ms]',
+              'font-serif italic text-[19px] tracking-[0.01em] relative cursor-pointer transition-colors duration-[250ms] min-h-[44px] px-1',
               'after:absolute after:bottom-[-3px] after:left-0 after:right-0 after:h-px after:bg-foreground after:origin-left after:transition-transform after:duration-[350ms]',
+              'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground rounded-sm',
               page === key
                 ? 'text-foreground after:scale-x-100'
                 : 'text-muted-foreground hover:text-foreground after:scale-x-0 hover:after:scale-x-100',
@@ -114,7 +115,7 @@ function Navigation({ page, setPage }: { page: Page; setPage: (p: Page) => void 
             <button
               key={key}
               onClick={() => { setPage(key); setOpen(false) }}
-              className={`font-serif italic text-xl text-left cursor-pointer transition-colors ${page === key ? 'text-foreground' : 'text-muted-foreground'}`}
+              className={`font-serif italic text-xl text-left cursor-pointer transition-colors min-h-[44px] flex items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground rounded-sm ${page === key ? 'text-foreground' : 'text-muted-foreground'}`}
             >
               {label}
             </button>
@@ -182,7 +183,7 @@ const SERVICES = [
 
 function HomePage({ setPage }: { setPage: (p: Page) => void }) {
   return (
-    <main>
+    <main id="main-content">
       {/* HERO */}
       <div className="mt-[76px] h-[calc(100vh-76px)] grid grid-cols-[55%_45%]
                       max-lg:grid-cols-1 max-lg:grid-rows-[50vh_auto]">
@@ -192,6 +193,9 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
             src="/assets/hero.jpg"
             alt="ASEG Influence — agence de talents"
             className="absolute inset-0 w-full h-full object-cover z-[2] transition-transform duration-[8000ms] ease-linear hover:scale-[1.03]"
+            loading="eager"
+            fetchPriority="high"
+            decoding="sync"
             onError={(e) => { e.currentTarget.style.display = 'none' }}
           />
           <HeroArt />
@@ -324,9 +328,10 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
               >
                 <img
                   src={brand.logo}
-                  alt={brand.name}
+                  alt={`Logo ${brand.name}`}
                   className="brand-logo-img"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             ))}
@@ -347,9 +352,34 @@ const TALENTS = [
   { id: 6, name: 'Alexandre Moreau', category: 'Business & Finance',   followers: '150K', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop', platforms: ['LinkedIn', 'YouTube'] },
 ]
 
+function TalentCard({ t, i }: { t: (typeof TALENTS)[0]; i: number }) {
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <Reveal delay={i * 80} className="border-r border-b border-border overflow-hidden group">
+      <div className="relative aspect-square overflow-hidden bg-muted">
+        {!loaded && <div className="absolute inset-0 animate-pulse bg-foreground/5" />}
+        <img
+          src={t.image}
+          alt={`Photo de ${t.name}`}
+          className={`w-full h-full object-cover transition-[transform,opacity] duration-[600ms] ease-out group-hover:scale-[1.04] ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+        />
+      </div>
+      <div className="px-8 py-7">
+        <div className="font-[family-name:var(--font-mono)] text-[8px] tracking-[0.3em] uppercase text-muted-foreground mb-2">{t.category}</div>
+        <div className="font-serif italic font-light text-[26px] leading-[1.1] mb-1">{t.name}</div>
+        <div className="font-[family-name:var(--font-mono)] text-[9px] tracking-[0.25em] text-muted-foreground mt-3">{t.platforms.join(' · ')}</div>
+        <div className="font-serif italic text-[28px] font-light text-border mt-1">{t.followers}</div>
+      </div>
+    </Reveal>
+  )
+}
+
 function TalentsPage() {
   return (
-    <main className="mt-[76px] px-16 py-24 max-md:px-8">
+    <main id="main-content" className="mt-[76px] px-16 py-24 max-md:px-8">
       <Reveal>
         <div className="mb-20">
           <div className="section-label">Notre roster</div>
@@ -362,22 +392,7 @@ function TalentsPage() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 border-t border-l border-border">
         {TALENTS.map((t, i) => (
-          <Reveal key={t.id} delay={i * 80}
-            className="border-r border-b border-border overflow-hidden group">
-            <div className="aspect-square overflow-hidden bg-muted">
-              <img
-                src={t.image}
-                alt={t.name}
-                className="w-full h-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.04]"
-              />
-            </div>
-            <div className="px-8 py-7">
-              <div className="font-[family-name:var(--font-mono)] text-[8px] tracking-[0.3em] uppercase text-muted-foreground mb-2">{t.category}</div>
-              <div className="font-serif italic font-light text-[26px] leading-[1.1] mb-1">{t.name}</div>
-              <div className="font-[family-name:var(--font-mono)] text-[9px] tracking-[0.25em] text-muted-foreground mt-3">{t.platforms.join(' · ')}</div>
-              <div className="font-serif italic text-[28px] font-light text-border mt-1">{t.followers}</div>
-            </div>
-          </Reveal>
+          <TalentCard key={t.id} t={t} i={i} />
         ))}
       </div>
     </main>
@@ -388,18 +403,23 @@ function TalentsPage() {
 function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setSent(true)
-    setFormData({ name: '', email: '', message: '' })
+    setSubmitting(true)
+    setTimeout(() => {
+      setSent(true)
+      setSubmitting(false)
+      setFormData({ name: '', email: '', message: '' })
+    }, 600)
   }
 
   return (
-    <main className="mt-[76px] grid grid-cols-[1fr_1fr] min-h-[calc(100vh-76px)] max-md:grid-cols-1">
+    <main id="main-content" className="mt-[76px] grid grid-cols-[1fr_1fr] min-h-[calc(100vh-76px)] max-md:grid-cols-1">
       {/* left */}
       <div className="flex flex-col justify-center px-16 py-24 border-r border-border max-md:border-r-0 max-md:border-b max-md:px-8 max-md:py-16">
         <Reveal>
@@ -419,7 +439,7 @@ function ContactPage() {
         <Reveal delay={240}>
           <a
             href="mailto:contact.aseginfluence@gmail.com"
-            className="font-[family-name:var(--font-mono)] text-[11px] tracking-[0.2em] text-foreground border-b border-foreground pb-1.5 w-fit transition-opacity hover:opacity-40"
+            className="font-[family-name:var(--font-mono)] text-[11px] tracking-[0.2em] text-foreground border-b border-foreground pb-1.5 w-fit transition-opacity hover:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground rounded-sm min-h-[44px] inline-flex items-center"
           >
             <Mail className="inline w-3.5 h-3.5 mr-2 mb-0.5" />
             contact.aseginfluence@gmail.com
@@ -441,13 +461,13 @@ function ContactPage() {
             <Reveal>
               <div className="space-y-3">
                 <Label htmlFor="name">Votre nom</Label>
-                <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Prénom Nom" required />
+                <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Prénom Nom" autoComplete="name" required />
               </div>
             </Reveal>
             <Reveal delay={80}>
               <div className="space-y-3">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="vous@exemple.com" required />
+                <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="vous@exemple.com" autoComplete="email" required />
               </div>
             </Reveal>
             <Reveal delay={160}>
@@ -457,8 +477,12 @@ function ContactPage() {
               </div>
             </Reveal>
             <Reveal delay={240}>
-              <Button type="submit" className="font-[family-name:var(--font-display)] text-[11px] tracking-[0.35em] uppercase px-14 h-12">
-                Envoyer
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="font-[family-name:var(--font-display)] text-[11px] tracking-[0.35em] uppercase px-14 h-12 transition-opacity"
+              >
+                {submitting ? 'Envoi…' : 'Envoyer'}
               </Button>
             </Reveal>
           </form>
@@ -476,6 +500,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:text-sm focus:font-medium"
+      >
+        Aller au contenu principal
+      </a>
       <Navigation page={page} setPage={setPage} />
       {page === 'home'    && <HomePage    setPage={setPage} />}
       {page === 'talents' && <TalentsPage />}
