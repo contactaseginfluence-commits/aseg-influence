@@ -31,9 +31,8 @@ const BRANDS = [
 
 const STATS = [
   { value: '500K+', label: 'Abonnés cumulés' },
-  { value: '150+',  label: 'Campagnes réussies' },
+  { value: '50+',   label: 'Campagnes réussies' },
   { value: '25+',   label: 'Marques partenaires' },
-  { value: '98%',   label: 'Satisfaction client' },
 ]
 
 const APPROCHE = [
@@ -149,7 +148,7 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
 
       {/* STATS */}
       <section className="py-14 px-6 bg-gray-50">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           {STATS.map((s, i) => (
             <div
               key={i}
