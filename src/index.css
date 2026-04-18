@@ -1,0 +1,186 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── Design tokens ──────────────────────────────────────────────────────── */
+@theme inline {
+  /* Editorial fonts */
+  --font-display: 'Tenor Sans', sans-serif;
+  --font-serif:   'Cormorant Garamond', serif;
+  --font-mono:    'Space Mono', monospace;
+
+  /* No radius — editorial look */
+  --radius:    0rem;
+  --radius-sm: 0rem;
+  --radius-md: 0rem;
+  --radius-lg: 0rem;
+  --radius-xl: 0rem;
+
+  /* Color mappings for Tailwind utilities */
+  --color-background:         var(--background);
+  --color-foreground:         var(--foreground);
+  --color-card:               var(--card);
+  --color-card-foreground:    var(--card-foreground);
+  --color-primary:            var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary:          var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:              var(--muted);
+  --color-muted-foreground:   var(--muted-foreground);
+  --color-accent:             var(--accent);
+  --color-accent-foreground:  var(--accent-foreground);
+  --color-border:             var(--border);
+  --color-input:              var(--input);
+  --color-ring:               var(--ring);
+  --color-destructive:        var(--destructive);
+}
+
+/* ─── Palette chaude éditoriale ──────────────────────────────────────────── */
+:root {
+  --background:            #f5f4f0;
+  --foreground:            #111111;
+  --card:                  #f5f4f0;
+  --card-foreground:       #111111;
+  --primary:               #111111;
+  --primary-foreground:    #f5f4f0;
+  --secondary:             #edeae4;
+  --secondary-foreground:  #111111;
+  --muted:                 #edeae4;
+  --muted-foreground:      #888888;
+  --accent:                #edeae4;
+  --accent-foreground:     #111111;
+  --border:                #e0ddd8;
+  --input:                 #e0ddd8;
+  --ring:                  #888888;
+  --destructive:           oklch(0.577 0.245 27.325);
+  --nav-h:                 76px;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-serif);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+}
+
+/* ─── Reveal animation ───────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* ─── CTA link ───────────────────────────────────────────────────────────── */
+.cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  text-decoration: none;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--foreground);
+  width: fit-content;
+  cursor: pointer;
+  transition: gap 0.35s, opacity 0.3s;
+}
+.cta-link:hover { gap: 26px; opacity: 0.5; }
+
+/* ─── Section label ─────────────────────────────────────────────────────── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.45em;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--muted-foreground);
+}
+
+/* ─── Hero art ───────────────────────────────────────────────────────────── */
+.hero-art {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #ece8e1 0%, #ddd8cf 42%, #d2ccc3 100%);
+  overflow: hidden;
+}
+.hero-art-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(150,144,135,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(150,144,135,0.07) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+.hero-art-word {
+  position: absolute;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(160,154,144,0.22);
+  font-size: clamp(88px, 14vw, 210px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  user-select: none;
+  pointer-events: none;
+  bottom: 6%;
+  left: -1%;
+  white-space: nowrap;
+}
+.hero-art-tag {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  color: rgba(140,134,124,0.6);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.expertise-num {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 96px;
+  font-weight: 300;
+  color: var(--border);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  display: block;
+  margin-bottom: -12px;
+}
+
+/* ─── Brand logo images ──────────────────────────────────────────────────── */
+.brand-logo-img {
+  max-width: 130px;
+  max-height: 64px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: opacity 0.25s ease;
+}
+.brand-cell:hover .brand-logo-img { opacity: 0.5; }
