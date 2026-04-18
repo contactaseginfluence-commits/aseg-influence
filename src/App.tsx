@@ -1,149 +1,32 @@
-import { useState, useEffect, useRef, type ReactNode } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Mail, Menu, X, Target, Users, TrendingUp, BarChart3, Award, Sparkles, CheckCircle2 } from 'lucide-react'
+import {
+  Users, TrendingUp, Mail, Menu, X,
+  Sparkles, Target, Award, BarChart3, CheckCircle2
+} from 'lucide-react'
 
 type Page = 'home' | 'talents' | 'contact'
 
-/* ─── Reveal animation component ──────────────────────────────────────── */
-function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setTimeout(() => el.classList.add('is-visible'), delay) },
-      { threshold: 0.06 }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [delay])
-  return <div ref={ref} className={`reveal ${className}`}>{children}</div>
-}
+/* ─── Data ────────────────────────────────────────────────────────────────── */
+const TALENTS = [
+  { id: 1, name: 'Sophie Martin',    category: 'Lifestyle & Mode',   followers: '250K', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop', platforms: ['Instagram', 'TikTok'] },
+  { id: 2, name: 'Lucas Dubois',     category: 'Tech & Gaming',      followers: '180K', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop', platforms: ['YouTube', 'Twitch'] },
+  { id: 3, name: 'Emma Rousseau',    category: 'Beauté & Wellness',  followers: '320K', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop', platforms: ['Instagram', 'YouTube'] },
+  { id: 4, name: 'Thomas Bernard',   category: 'Sport & Fitness',    followers: '195K', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop', platforms: ['Instagram', 'YouTube'] },
+  { id: 5, name: 'Léa Petit',        category: 'Food & Travel',      followers: '275K', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop', platforms: ['Instagram', 'TikTok'] },
+  { id: 6, name: 'Alexandre Moreau', category: 'Business & Finance', followers: '150K', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop', platforms: ['LinkedIn', 'YouTube'] },
+]
 
-/* ─── Hero art (editorial abstract background) ─────────────────────────── */
-function HeroArt() {
-  return (
-    <div className="hero-art z-[1]">
-      <div className="hero-art-grid" />
-      {/* orbs */}
-      <div className="absolute rounded-full" style={{ width:'72%', height:'72%', top:'-18%', left:'-12%', background:'radial-gradient(circle,rgba(255,252,245,0.55) 0%,transparent 68%)' }} />
-      <div className="absolute rounded-full" style={{ width:'90%', height:'65%', bottom:'-20%', right:'-22%', background:'radial-gradient(ellipse,rgba(200,195,186,0.45) 0%,transparent 65%)' }} />
-      <div className="absolute rounded-full" style={{ width:'38%', height:'38%', top:'28%', left:'32%', background:'radial-gradient(circle,rgba(220,216,208,0.6) 0%,transparent 70%)' }} />
-      {/* rings */}
-      {[
-        { w:110, h:110, top:'12%', left:'10%', op:0.2 },
-        { w:68,  h:68,  top:'22%', left:'18%', op:0.35 },
-        { w:52,  h:52,  top:'55%', left:'48%', op:0.2 },
-        { w:90,  h:90,  top:'62%', left:'62%', op:0.3 },
-        { w:36,  h:36,  top:'10%', left:'68%', op:0.2 },
-        { w:140, h:140, top:'30%', left:'55%', op:0.15 },
-      ].map((r, i) => (
-        <div key={i} className="absolute rounded-full" style={{ width:r.w, height:r.h, top:r.top, left:r.left, border:`1px solid rgba(150,144,135,${r.op})` }} />
-      ))}
-      {/* SVG lines */}
-      <svg className="absolute inset-0 w-full h-full" aria-hidden focusable="false">
-        <line x1="18%" y1="18%" x2="73%" y2="14%" stroke="rgba(150,144,134,0.15)" strokeWidth="1"/>
-        <line x1="73%" y1="14%" x2="82%" y2="37%" stroke="rgba(150,144,134,0.12)" strokeWidth="1"/>
-        <line x1="18%" y1="18%" x2="52%" y2="57%" stroke="rgba(150,144,134,0.1)"  strokeWidth="1"/>
-        <line x1="52%" y1="57%" x2="82%" y2="65%" stroke="rgba(150,144,134,0.13)" strokeWidth="1"/>
-        <line x1="73%" y1="14%" x2="52%" y2="57%" stroke="rgba(150,144,134,0.09)" strokeWidth="1"/>
-      </svg>
-      {/* tags */}
-      <span className="hero-art-tag" style={{ top:'16%', right:'12%' }}><span className="block w-4 h-px bg-current opacity-60" />Créateurs</span>
-      <span className="hero-art-tag" style={{ top:'42%', left:'8%'  }}><span className="block w-4 h-px bg-current opacity-60" />Stratégie</span>
-      <span className="hero-art-tag" style={{ bottom:'22%', right:'8%' }}><span className="block w-4 h-px bg-current opacity-60" />Marques</span>
-      {/* watermark */}
-      <span className="hero-art-word" aria-hidden>Influence</span>
-    </div>
-  )
-}
-
-/* ─── Navigation ───────────────────────────────────────────────────────── */
-function Navigation({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
-  const [open, setOpen] = useState(false)
-
-  const links: { key: Page; label: string }[] = [
-    { key: 'home',    label: 'Accueil' },
-    { key: 'talents', label: 'Talents' },
-    { key: 'contact', label: 'Contact' },
-  ]
-
-  return (
-    <nav className="fixed top-0 inset-x-0 z-50 h-[76px] grid grid-cols-[1fr_auto_1fr] items-center px-12 bg-background border-b border-border">
-      <button
-        onClick={() => setPage('home')}
-        className="font-[family-name:var(--font-display)] text-[12px] tracking-[0.3em] uppercase text-left cursor-pointer min-h-[44px] flex items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground rounded-sm"
-      >
-        ASEG Influence
-      </button>
-
-      {/* desktop */}
-      <div className="hidden md:flex gap-14">
-        {links.map(({ key, label }) => (
-          <button
-            key={key}
-            onClick={() => setPage(key)}
-            className={[
-              'font-serif italic text-[19px] tracking-[0.01em] relative cursor-pointer transition-colors duration-[250ms] min-h-[44px] px-1',
-              'after:absolute after:bottom-[-3px] after:left-0 after:right-0 after:h-px after:bg-foreground after:origin-left after:transition-transform after:duration-[350ms]',
-              'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground rounded-sm',
-              page === key
-                ? 'text-foreground after:scale-x-100'
-                : 'text-muted-foreground hover:text-foreground after:scale-x-0 hover:after:scale-x-100',
-            ].join(' ')}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* mobile menu button */}
-      <div className="md:hidden col-start-3 flex justify-end">
-        <Button variant="ghost" size="icon" onClick={() => setOpen(!open)} aria-label="Menu">
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </Button>
-      </div>
-      <div />
-
-      {/* mobile dropdown */}
-      {open && (
-        <div className="md:hidden absolute top-[76px] inset-x-0 bg-background border-b border-border px-12 pb-6 flex flex-col gap-4">
-          {links.map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => { setPage(key); setOpen(false) }}
-              className={`font-serif italic text-xl text-left cursor-pointer transition-colors min-h-[44px] flex items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground rounded-sm ${page === key ? 'text-foreground' : 'text-muted-foreground'}`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      )}
-    </nav>
-  )
-}
-
-/* ─── Footer ───────────────────────────────────────────────────────────── */
-function Footer() {
-  return (
-    <footer className="px-16 py-10 flex justify-between items-center border-t border-border mt-30">
-      <div className="font-[family-name:var(--font-display)] text-[11px] tracking-[0.3em] uppercase">ASEG Influence</div>
-      <div className="font-[family-name:var(--font-mono)] text-[9px] tracking-[0.2em] uppercase text-muted-foreground">© 2025 — Tous droits réservés</div>
-    </footer>
-  )
-}
-
-/* ─── Home page ─────────────────────────────────────────────────────────── */
 const BRANDS = [
-  { name: 'Lounge',                  logo: '/assets/logo lounge.png' },
-  { name: 'Garnier',                 logo: '/assets/logo garnier.jpg' },
-  { name: 'Uriage Eau Thermale',     logo: '/assets/logo uriage.svg' },
-  { name: 'My Little Box',           logo: '/assets/logo My Little box.png' },
-  { name: "La Bijouterie d'Emilie",  logo: '/assets/bijouterie-emilie.png' },
-  { name: 'Starbucks',               logo: '/assets/logo starbucks.png' },
+  { name: 'Lounge',               logo: '/assets/logo lounge.png' },
+  { name: 'Garnier',              logo: '/assets/logo garnier.jpg' },
+  { name: 'Uriage Eau Thermale',  logo: '/assets/logo uriage.svg' },
+  { name: 'My Little Box',        logo: '/assets/logo My Little box.png' },
+  { name: "La Bijouterie d'Emilie", logo: '/assets/bijouterie-emilie.png' },
+  { name: 'Starbucks',            logo: '/assets/logo starbucks.png' },
 ]
 
 const STATS = [
@@ -153,255 +36,266 @@ const STATS = [
   { value: '98%',   label: 'Satisfaction client' },
 ]
 
-const EXPERTISE = [
-  {
-    num: '01',
-    title: 'Gestion de carrière',
-    desc: 'Nous prenons en charge la stratégie, les négociations et le développement à long terme de chaque talent.',
-    icon: BarChart3,
-  },
-  {
-    num: '02',
-    title: 'Partenariats de marque',
-    desc: 'Accès à un réseau de marques premium. Nous sélectionnons les collaborations qui correspondent à votre image.',
-    icon: Award,
-  },
-  {
-    num: '03',
-    title: 'Accompagnement créatif',
-    desc: 'Brief, production, direction artistique — nous sommes là à chaque étape pour que le contenu soit à la hauteur.',
-    icon: Sparkles,
-  },
+const APPROCHE = [
+  { icon: Target,     title: 'Accompagnement personnalisé', desc: 'Chaque influenceur est unique. Nous créons des stratégies sur mesure qui respectent votre identité et vos valeurs.' },
+  { icon: Users,      title: 'Relations authentiques',      desc: 'Nous privilégions les collaborations qui ont du sens, entre marques et créateurs qui partagent les mêmes valeurs.' },
+  { icon: TrendingUp, title: 'Croissance durable',          desc: 'Notre objectif : développer votre carrière sur le long terme avec des partenariats qui vous ressemblent.' },
 ]
 
 const SERVICES = [
-  { icon: Target,        title: 'Accompagnement personnalisé', desc: 'Chaque influenceur est unique. Nous créons des stratégies sur mesure qui respectent votre identité et vos valeurs.' },
-  { icon: Users,         title: 'Relations authentiques',      desc: 'Nous privilégions les collaborations qui ont du sens, entre marques et créateurs qui partagent les mêmes valeurs.' },
-  { icon: TrendingUp,    title: 'Croissance durable',          desc: 'Notre objectif : développer votre carrière sur le long terme avec des partenariats qui vous ressemblent.' },
-  { icon: CheckCircle2,  title: 'Conseil & stratégie',         desc: 'Analyse de vos performances, conseils éditoriaux et stratégie de contenu pour optimiser votre croissance.' },
+  { icon: BarChart3,    title: 'Gestion de carrière',      desc: 'Développement stratégique de votre personal branding et accompagnement dans toutes vos décisions professionnelles.' },
+  { icon: Award,        title: 'Négociation de contrats',  desc: 'Nous défendons vos intérêts et négocions les meilleures conditions pour chaque collaboration avec les marques.' },
+  { icon: Sparkles,     title: 'Création de partenariats', desc: 'Mise en relation avec des marques qui correspondent à vos valeurs et à votre audience pour des collaborations authentiques.' },
+  { icon: CheckCircle2, title: 'Conseil & stratégie',      desc: 'Analyse de vos performances, conseils éditoriaux et stratégie de contenu pour optimiser votre croissance.' },
 ]
 
+/* ─── Navigation ──────────────────────────────────────────────────────────── */
+function Navigation({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
+  const [open, setOpen] = useState(false)
+  const links: { key: Page; label: string }[] = [
+    { key: 'home',    label: 'Accueil' },
+    { key: 'talents', label: 'Nos Talents' },
+    { key: 'contact', label: 'Contact' },
+  ]
+
+  return (
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex justify-between items-center h-14">
+          <button
+            onClick={() => setPage('home')}
+            className="text-base font-semibold text-gray-900 cursor-pointer tracking-tight"
+          >
+            ASEG Influence
+          </button>
+
+          <div className="hidden md:flex space-x-6">
+            {links.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setPage(key)}
+                className={`text-sm transition-colors cursor-pointer ${
+                  page === key ? 'text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-900'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="md:hidden">
+            <button onClick={() => setOpen(!open)} aria-label={open ? 'Fermer' : 'Menu'} className="p-2">
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        {open && (
+          <div className="md:hidden pb-3 space-y-1 border-t border-gray-100 pt-2">
+            {links.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => { setPage(key); setOpen(false) }}
+                className="block w-full text-left px-2 py-2.5 text-sm text-gray-700 hover:text-gray-900 cursor-pointer"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </nav>
+  )
+}
+
+/* ─── Home page ───────────────────────────────────────────────────────────── */
 function HomePage({ setPage }: { setPage: (p: Page) => void }) {
   return (
     <main id="main-content">
       {/* HERO */}
-      <div className="mt-[76px] h-[calc(100vh-76px)] grid grid-cols-[55%_45%]
-                      max-lg:grid-cols-1 max-lg:grid-rows-[50vh_auto]">
-        {/* left — art / image */}
-        <div className="relative overflow-hidden">
-          <img
-            src="/assets/hero.jpg"
-            alt="ASEG Influence — agence de talents"
-            className="absolute inset-0 w-full h-full object-cover z-[2] transition-transform duration-[8000ms] ease-linear hover:scale-[1.03]"
-            loading="eager"
-            fetchPriority="high"
-            decoding="sync"
-            onError={(e) => { e.currentTarget.style.display = 'none' }}
-          />
-          <HeroArt />
+      <section className="relative py-20 px-6 bg-white text-center overflow-hidden">
+        <div className="absolute top-10 left-1/4 w-80 h-80 bg-gray-200 rounded-full blur-3xl opacity-50 pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-64 bg-gray-100 rounded-full blur-3xl opacity-60 pointer-events-none" />
+        <div className="relative max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 border border-gray-300 px-4 py-1.5 rounded-full mb-8">
+            <Sparkles className="h-3.5 w-3.5 text-gray-600" />
+            <span className="text-xs font-medium text-gray-600 tracking-wide">Agence d'influence nouvelle génération</span>
+          </div>
+          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-5 leading-[1.1] tracking-tight">
+            L'humain au cœur<br />de l'influence
+          </h1>
+          <p className="text-base text-gray-500 max-w-xl mx-auto mb-8 leading-relaxed">
+            Nous accompagnons les créateurs de contenu dans leurs collaborations
+            avec les marques. Des partenariats <span className="font-semibold text-gray-800">authentiques</span> et{' '}
+            <span className="font-semibold text-gray-800">durables</span>.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button
+              onClick={() => setPage('contact')}
+              className="bg-gray-900 text-white hover:bg-gray-800 px-6 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-transform hover:scale-105"
+            >
+              Rejoignez-nous
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setPage('talents')}
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-transform hover:scale-105"
+            >
+              Découvrir nos talents
+            </Button>
+          </div>
         </div>
-        {/* right — text */}
-        <div className="flex flex-col justify-end px-16 py-[72px] border-l border-border max-lg:border-l-0 max-lg:border-t">
-          <Reveal>
-            <div className="font-[family-name:var(--font-mono)] text-[9px] tracking-[0.4em] uppercase text-muted-foreground mb-7">
-              Paris — Agence d'influence
-            </div>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="font-serif font-light italic leading-[0.95] tracking-[-0.01em] mb-9"
-                style={{ fontSize: 'clamp(52px, 6vw, 96px)' }}>
-              <em className="not-italic font-[family-name:var(--font-display)] text-[0.55em] tracking-[0.08em] uppercase block mb-1.5 text-muted-foreground">
-                ASEG
-              </em>
-              Influence.
-            </h1>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="font-serif text-[18px] text-muted-foreground leading-[1.75] max-w-[320px] mb-13 border-l-2 border-border pl-5">
-              Nous accompagnons les créateurs qui ont quelque chose à dire.
-            </p>
-          </Reveal>
-          <Reveal delay={240}>
-            <button className="cta-link" onClick={() => setPage('talents')}>
-              Voir nos talents <span aria-hidden>→</span>
-            </button>
-          </Reveal>
-        </div>
-      </div>
+      </section>
 
       {/* STATS */}
-      <section className="py-20 px-16 border-t border-border">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="py-14 px-6 bg-gray-50">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           {STATS.map((s, i) => (
-            <Reveal key={i} delay={i * 80}>
-              <div className="text-center py-8 border border-border">
-                <div className="font-serif italic font-light text-[52px] leading-none tracking-[-0.03em] mb-2">{s.value}</div>
-                <p className="font-[family-name:var(--font-mono)] text-[9px] tracking-[0.3em] uppercase text-muted-foreground">{s.label}</p>
-              </div>
-            </Reveal>
+            <div
+              key={i}
+              className="text-center p-6 bg-white rounded-xl border border-gray-200 transition-transform duration-200 hover:scale-105 hover:shadow-md cursor-default"
+            >
+              <div className="text-4xl font-bold text-gray-900 mb-1">{s.value}</div>
+              <p className="text-xs text-gray-500">{s.label}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* EXPERTISE */}
-      <section className="py-[140px] px-16 border-t border-border">
-        <Reveal>
-          <div className="grid grid-cols-2 gap-20 items-end mb-24 max-md:grid-cols-1 max-md:gap-8">
-            <h2 className="font-serif italic font-light leading-[1.1] tracking-[-0.01em]"
-                style={{ fontSize: 'clamp(36px, 4.5vw, 68px)' }}>
-              Ce que nous<br />apportons.
-            </h2>
-            <p className="font-serif text-[17px] text-muted-foreground leading-[1.75] max-w-[340px] self-end">
-              Une approche singulière du métier — stratégie, créativité et réseau au service de chaque talent.
+      {/* APPROCHE */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">Notre approche humaine</h2>
+            <p className="text-sm text-gray-500 max-w-lg mx-auto leading-relaxed">
+              Nous plaçons l'humain au centre de chaque collaboration pour créer des partenariats qui ont du sens et qui durent
             </p>
           </div>
-        </Reveal>
-
-        <div className="grid grid-cols-3 border-t border-border max-md:grid-cols-1">
-          {EXPERTISE.map((item, i) => (
-            <Reveal key={i} delay={i * 100}
-              className={[
-                'pt-12 pb-12',
-                i < EXPERTISE.length - 1 ? 'pr-10 border-r border-border max-md:border-r-0 max-md:border-b max-md:pr-0' : '',
-                i > 0 ? 'pl-10 max-md:pl-0' : '',
-              ].join(' ')}>
-              <span className="expertise-num">{item.num}</span>
-              <div className="font-[family-name:var(--font-display)] text-[13px] tracking-[0.14em] uppercase mt-5 mb-4">
-                {item.title}
-              </div>
-              <p className="font-serif italic text-base text-[#777] leading-[1.7]">{item.desc}</p>
-            </Reveal>
-          ))}
+          <div className="grid md:grid-cols-3 gap-6">
+            {APPROCHE.map((item, i) => {
+              const Icon = item.icon
+              return (
+                <div
+                  key={i}
+                  className="p-6 bg-gray-50 rounded-xl border border-gray-200 transition-transform duration-200 hover:scale-105 hover:shadow-md cursor-default"
+                >
+                  <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center mb-4">
+                    <Icon className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="text-base font-semibold text-gray-900 mb-2">{item.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                </div>
+              )
+            })}
+          </div>
         </div>
       </section>
 
       {/* SERVICES */}
-      <section className="py-20 px-16 border-t border-border">
-        <Reveal>
-          <div className="mb-16">
-            <div className="section-label">Notre approche</div>
-            <h2 className="font-serif italic font-light leading-[1.05]"
-                style={{ fontSize: 'clamp(40px, 4.5vw, 68px)' }}>
-              L'humain au cœur<br />de l'influence.
-            </h2>
+      <section className="py-20 px-6 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">Nos services</h2>
+            <p className="text-sm text-gray-500">Un accompagnement complet pour votre réussite</p>
           </div>
-        </Reveal>
-        <div className="grid md:grid-cols-2 gap-0 border-t border-l border-border">
-          {SERVICES.map((s, i) => {
-            const Icon = s.icon
-            return (
-              <Reveal key={i} delay={i * 80}
-                className="border-b border-r border-border p-10">
-                <div className="flex items-start gap-6">
-                  <Icon className="w-5 h-5 mt-1 shrink-0 text-muted-foreground" />
+          <div className="grid md:grid-cols-2 gap-4">
+            {SERVICES.map((s, i) => {
+              const Icon = s.icon
+              return (
+                <div
+                  key={i}
+                  className="flex items-start gap-4 p-6 bg-white rounded-xl border border-gray-200 transition-transform duration-200 hover:scale-105 hover:shadow-md cursor-default"
+                >
+                  <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center shrink-0">
+                    <Icon className="h-5 w-5 text-white" />
+                  </div>
                   <div>
-                    <div className="font-[family-name:var(--font-display)] text-[12px] tracking-[0.14em] uppercase mb-3">{s.title}</div>
-                    <p className="font-serif italic text-[16px] text-[#777] leading-[1.7]">{s.desc}</p>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1">{s.title}</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">{s.desc}</p>
                   </div>
                 </div>
-              </Reveal>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       </section>
 
-      {/* COLLABORATIONS */}
-      <section className="py-30 px-16 border-t border-border">
-        <Reveal>
-          <div className="flex justify-between items-end mb-18 max-md:flex-col max-md:items-start max-md:gap-4">
-            <h2 className="font-serif italic font-light leading-[1.05]"
-                style={{ fontSize: 'clamp(40px, 4.5vw, 68px)' }}>
-              Ils nous<br />font confiance.
-            </h2>
-            <p className="font-serif italic text-[16px] text-muted-foreground max-w-[220px] text-right max-md:text-left leading-[1.6]">
-              Des marques qui comprennent la valeur d'une influence authentique.
+      {/* MARQUES */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">Ils nous font confiance</h2>
+            <p className="text-sm text-gray-500 max-w-md mx-auto">
+              Des marques prestigieuses qui partagent notre vision de l'influence authentique
             </p>
           </div>
-        </Reveal>
-
-        <Reveal>
-          <div className="grid grid-cols-3 max-sm:grid-cols-2 border-t border-l border-border">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {BRANDS.map((brand) => (
               <div
                 key={brand.name}
-                className="brand-cell border-r border-b border-border flex items-center justify-center min-h-[120px] px-6 py-10 transition-colors duration-250 hover:bg-black/[0.018] cursor-default"
+                className="flex items-center justify-center p-6 bg-white rounded-xl border border-gray-200 transition-transform duration-200 hover:scale-105 hover:shadow-md cursor-default"
               >
                 <img
                   src={brand.logo}
                   alt={`Logo ${brand.name}`}
-                  className="brand-logo-img"
+                  className="max-w-[120px] max-h-[52px] w-full h-auto object-contain opacity-70 hover:opacity-100 transition-opacity"
                   loading="lazy"
                   decoding="async"
                 />
               </div>
             ))}
           </div>
-        </Reveal>
+        </div>
       </section>
     </main>
   )
 }
 
-/* ─── Talents page ──────────────────────────────────────────────────────── */
-const TALENTS = [
-  { id: 1, name: 'Sophie Martin',    category: 'Lifestyle & Mode',     followers: '250K', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop', platforms: ['Instagram', 'TikTok'] },
-  { id: 2, name: 'Lucas Dubois',     category: 'Tech & Gaming',        followers: '180K', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop', platforms: ['YouTube', 'Twitch'] },
-  { id: 3, name: 'Emma Rousseau',    category: 'Beauté & Wellness',    followers: '320K', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop', platforms: ['Instagram', 'YouTube'] },
-  { id: 4, name: 'Thomas Bernard',   category: 'Sport & Fitness',      followers: '195K', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop', platforms: ['Instagram', 'YouTube'] },
-  { id: 5, name: 'Léa Petit',        category: 'Food & Travel',        followers: '275K', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop', platforms: ['Instagram', 'TikTok'] },
-  { id: 6, name: 'Alexandre Moreau', category: 'Business & Finance',   followers: '150K', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop', platforms: ['LinkedIn', 'YouTube'] },
-]
-
-function TalentCard({ t, i }: { t: (typeof TALENTS)[0]; i: number }) {
+/* ─── Talents page ────────────────────────────────────────────────────────── */
+function TalentCard({ t }: { t: (typeof TALENTS)[0] }) {
   const [loaded, setLoaded] = useState(false)
   return (
-    <Reveal delay={i * 80} className="border-r border-b border-border overflow-hidden group">
-      <div className="relative aspect-square overflow-hidden bg-muted">
-        {!loaded && <div className="absolute inset-0 animate-pulse bg-foreground/5" />}
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-transform duration-200 hover:scale-105 hover:shadow-md cursor-default">
+      <div className="relative aspect-square overflow-hidden bg-gray-100">
+        {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
         <img
           src={t.image}
           alt={`Photo de ${t.name}`}
-          className={`w-full h-full object-cover transition-[transform,opacity] duration-[600ms] ease-out group-hover:scale-[1.04] ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           loading="lazy"
           decoding="async"
           onLoad={() => setLoaded(true)}
         />
       </div>
-      <div className="px-8 py-7">
-        <div className="font-[family-name:var(--font-mono)] text-[8px] tracking-[0.3em] uppercase text-muted-foreground mb-2">{t.category}</div>
-        <div className="font-serif italic font-light text-[26px] leading-[1.1] mb-1">{t.name}</div>
-        <div className="font-[family-name:var(--font-mono)] text-[9px] tracking-[0.25em] text-muted-foreground mt-3">{t.platforms.join(' · ')}</div>
-        <div className="font-serif italic text-[28px] font-light text-border mt-1">{t.followers}</div>
+      <div className="p-4">
+        <h3 className="text-sm font-semibold text-gray-900">{t.name}</h3>
+        <p className="text-xs text-gray-500 mt-0.5">{t.category}</p>
       </div>
-    </Reveal>
+    </div>
   )
 }
 
 function TalentsPage() {
   return (
-    <main id="main-content" className="mt-[76px] px-16 py-24 max-md:px-8">
-      <Reveal>
-        <div className="mb-20">
-          <div className="section-label">Notre roster</div>
-          <h1 className="font-serif italic font-light leading-[0.95] tracking-[-0.01em]"
-              style={{ fontSize: 'clamp(48px, 6vw, 96px)' }}>
-            Nos Talents.
-          </h1>
+    <main id="main-content" className="min-h-screen bg-white py-16 px-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">Nos Talents</h1>
+          <p className="text-sm text-gray-500 max-w-md mx-auto">
+            Découvrez les créateurs de contenu qui font partie de la famille ASEG Influence
+          </p>
         </div>
-      </Reveal>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 border-t border-l border-border">
-        {TALENTS.map((t, i) => (
-          <TalentCard key={t.id} t={t} i={i} />
-        ))}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {TALENTS.map((t) => <TalentCard key={t.id} t={t} />)}
+        </div>
       </div>
     </main>
   )
 }
 
-/* ─── Contact page ──────────────────────────────────────────────────────── */
+/* ─── Contact page ────────────────────────────────────────────────────────── */
 function ContactPage() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' })
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
@@ -414,103 +308,114 @@ function ContactPage() {
     setTimeout(() => {
       setSent(true)
       setSubmitting(false)
-      setFormData({ name: '', email: '', message: '' })
+      setFormData({ name: '', email: '', phone: '', message: '' })
     }, 600)
   }
 
   return (
-    <main id="main-content" className="mt-[76px] grid grid-cols-[1fr_1fr] min-h-[calc(100vh-76px)] max-md:grid-cols-1">
-      {/* left */}
-      <div className="flex flex-col justify-center px-16 py-24 border-r border-border max-md:border-r-0 max-md:border-b max-md:px-8 max-md:py-16">
-        <Reveal>
-          <div className="section-label">Rejoignez-nous</div>
-        </Reveal>
-        <Reveal delay={80}>
-          <h1 className="font-serif italic font-light leading-[0.92] tracking-[-0.02em] mb-10"
-              style={{ fontSize: 'clamp(52px, 6.5vw, 104px)' }}>
-            On<br />parle ?
-          </h1>
-        </Reveal>
-        <Reveal delay={160}>
-          <p className="font-serif text-[18px] text-muted-foreground leading-[1.75] mb-12 max-w-[300px]">
-            Vous êtes créateur et vous voulez en savoir plus ? Écrivez-nous.
+    <main id="main-content" className="min-h-screen bg-white py-16 px-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">Contactez-nous</h1>
+          <p className="text-sm text-gray-500 max-w-md mx-auto">
+            Vous êtes influenceur ou une marque ? Parlons de votre projet ensemble
           </p>
-        </Reveal>
-        <Reveal delay={240}>
-          <a
-            href="mailto:contact.aseginfluence@gmail.com"
-            className="font-[family-name:var(--font-mono)] text-[11px] tracking-[0.2em] text-foreground border-b border-foreground pb-1.5 w-fit transition-opacity hover:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground rounded-sm min-h-[44px] inline-flex items-center"
-          >
-            <Mail className="inline w-3.5 h-3.5 mr-2 mb-0.5" />
-            contact.aseginfluence@gmail.com
-          </a>
-        </Reveal>
-      </div>
+        </div>
 
-      {/* right — form */}
-      <div className="flex flex-col justify-center px-16 py-24 max-md:px-8 max-md:py-16">
-        {sent ? (
-          <Reveal>
-            <div className="font-serif italic text-[28px] font-light leading-[1.3]">
-              Merci pour votre message.<br />
-              <span className="text-muted-foreground">Nous reviendrons vers vous très vite.</span>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <h2 className="text-base font-semibold text-gray-900 mb-1">Envoyez-nous un message</h2>
+            <p className="text-xs text-gray-500 mb-5">Nous vous répondrons dans les plus brefs délais</p>
+            {sent ? (
+              <div className="py-8 text-center">
+                <CheckCircle2 className="h-10 w-10 text-gray-900 mx-auto mb-3" />
+                <p className="text-sm font-medium text-gray-900">Merci pour votre message !</p>
+                <p className="text-xs text-gray-500 mt-1">Nous vous contacterons très bientôt.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="name" className="text-xs">Nom complet</Label>
+                  <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Votre nom" autoComplete="name" required className="text-sm" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-xs">Email</Label>
+                  <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="votre@email.com" autoComplete="email" required className="text-sm" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="phone" className="text-xs">Téléphone</Label>
+                  <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleChange} placeholder="+33 6 12 34 56 78" autoComplete="tel" className="text-sm" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="message" className="text-xs">Message</Label>
+                  <Textarea id="message" name="message" value={formData.message} onChange={handleChange} placeholder="Parlez-nous de votre projet…" rows={4} required className="text-sm" />
+                </div>
+                <Button type="submit" disabled={submitting} className="w-full bg-gray-900 hover:bg-gray-800 text-white text-sm cursor-pointer">
+                  {submitting ? 'Envoi…' : 'Envoyer le message'}
+                </Button>
+              </form>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h2 className="text-base font-semibold text-gray-900 mb-4">Informations de contact</h2>
+              <div className="flex items-start gap-3">
+                <Mail className="h-4 w-4 text-gray-600 mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs font-medium text-gray-900">Email</p>
+                  <a href="mailto:contact.aseginfluence@gmail.com" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">
+                    contact.aseginfluence@gmail.com
+                  </a>
+                </div>
+              </div>
             </div>
-          </Reveal>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-11">
-            <Reveal>
-              <div className="space-y-3">
-                <Label htmlFor="name">Votre nom</Label>
-                <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Prénom Nom" autoComplete="name" required />
+
+            <div className="bg-gray-50 rounded-xl border border-gray-200 p-6">
+              <h2 className="text-base font-semibold text-gray-900 mb-4">Horaires d'ouverture</h2>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-xs text-gray-500">Lundi — Vendredi</span>
+                  <span className="text-xs font-medium text-gray-900">9h00 — 18h00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-xs text-gray-500">Samedi — Dimanche</span>
+                  <span className="text-xs text-gray-400">Fermé</span>
+                </div>
               </div>
-            </Reveal>
-            <Reveal delay={80}>
-              <div className="space-y-3">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="vous@exemple.com" autoComplete="email" required />
-              </div>
-            </Reveal>
-            <Reveal delay={160}>
-              <div className="space-y-3">
-                <Label htmlFor="message">Votre message</Label>
-                <Textarea id="message" name="message" value={formData.message} onChange={handleChange} placeholder="Présentez-vous, partagez vos réseaux…" required />
-              </div>
-            </Reveal>
-            <Reveal delay={240}>
-              <Button
-                type="submit"
-                disabled={submitting}
-                className="font-[family-name:var(--font-display)] text-[11px] tracking-[0.35em] uppercase px-14 h-12 transition-opacity"
-              >
-                {submitting ? 'Envoi…' : 'Envoyer'}
-              </Button>
-            </Reveal>
-          </form>
-        )}
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   )
 }
 
-/* ─── Root ──────────────────────────────────────────────────────────────── */
+/* ─── Root ────────────────────────────────────────────────────────────────── */
 export default function App() {
   const [page, setPage] = useState<Page>('home')
 
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }) }, [page])
+  const navigate = (p: Page) => {
+    setPage(p)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:text-sm focus:font-medium"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-gray-900 focus:text-white focus:text-sm focus:font-medium"
       >
         Aller au contenu principal
       </a>
-      <Navigation page={page} setPage={setPage} />
-      {page === 'home'    && <HomePage    setPage={setPage} />}
+      <Navigation page={page} setPage={navigate} />
+      {page === 'home'    && <HomePage    setPage={navigate} />}
       {page === 'talents' && <TalentsPage />}
       {page === 'contact' && <ContactPage />}
-      <Footer />
+      <footer className="bg-gray-50 border-t border-gray-200 py-8 px-6 text-center">
+        <p className="text-sm font-semibold text-gray-900 mb-1">ASEG Influence</p>
+        <p className="text-xs text-gray-400">© 2025 ASEG Influence. Tous droits réservés.</p>
+      </footer>
     </div>
   )
 }
